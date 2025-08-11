@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-time weather forecast, maps, and favorite cities with Weather App Pro.">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <title>Weather Dashboard Pro</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Leaflet for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Left Navigation Panel -->
+    <nav class="nav-panel">
+        <div class="nav-header"><h3><a class="home-style" href="#dashboard">Weather App Pro</a></h3></div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#dashboard" class="nav-link active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span><h1>Dashboard</h1></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#favorites" class="nav-link" data-page="favorites">
+                    <i class="fas fa-star"></i>
+                    <span><h1>Favorites</h1></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#maps" class="nav-link" data-page="maps">
+                    <i class="fas fa-map"></i>
+                    <span><h1>Maps</h1></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#settings" class="nav-link" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span><h1>Settings</h1></span>
+                </a>
+            </li>
+        </ul>
+        <div class="nav-footer">
+            Weather App Pro v2.0<br>
+            © 2023 All Rights Reserved
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+
+
+
+        <!-- Dashboard Page -->
+<div id="dashboard" class="page active">
+  <div class="dashboard-layout">
+    <div class="container grid-container">
+
+        <div>
+
+    <div class="search-container">
+                    <input type="text" placeholder="Search for cities" id="searchInput" aria-label="Search for cities" value="Madrid">
+                    <button type="button" class="search-btn" id="searchBtn" aria-label="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+
+                <!-- Unit Toggle -->
+                <div class="unit-toggle">
+                    <button type="button" class="toggle-btn active" id="celsiusBtn">°C</button>
+                    <button type="button" class="toggle-btn" id="fahrenheitBtn">°F</button>
+                </div>
+
+    <!-- Left: Weather Data -->
+    <div id="weatherData" class="weather-panel">
+        <div class="loading">Loading weather data...</div>
+      <div class="current-weather">
+        <div class="city">Stockholm, SE</div>
+        <div class="weather-description clear">Clear sky</div>
+        <div class="rain-chance">Chance of rain: 0%</div>
+        <div class="temperature">22°C</div>
+        <!-- <button class="favorite-btn active">
+          <i class="fas fa-star"></i> Saved
+        </button> -->
+
+      </div>
+
+      <button class="favorite-btn ${state.favorites.includes(cityName) ? 'active' : ''}" 
+    onclick="toggleFavorite('${cityName}')">
+    <i class="fas fa-star"></i> ${state.favorites.includes(cityName) ? 'Saved' : 'Save to Favorites'}
+</button>
+
+
+      <!-- <button onclick="toggleFavorite('Madrid')" class="favorite-btn">Test Save</button> -->
+
+      <div class="forecast-title">TODAY'S FORECAST</div>
+      <div class="hourly-forecast" id="hourlyForecast">
+        <div class="hour">
+          <div class="hour-time">9 AM</div>
+          <img src="https://openweathermap.org/img/wn/01d.png" class="weather-icon" alt="Clear sky">
+          <div class="hour-temp">21°C</div>
+        </div>
+        <!-- Repeat more hours -->
+      </div>
+
+      <div class="air-conditions">
+        <div class="conditions-title">AIR CONDITIONS</div>
+        <div class="conditions-grid">
+          <div class="condition-item">
+            <span class="condition-label">Real Feel</span>
+            <span class="condition-value">21°C</span>
+          </div>
+          <div class="condition-item">
+            <span class="condition-label">Humidity</span>
+            <span class="condition-value">50%</span>
+          </div>
+          <div class="condition-item">
+            <span class="condition-label">Wind</span>
+            <span class="condition-value">15 km/h</span>
+          </div>
+          <div class="condition-item">
+            <span class="condition-label">Chance of rain</span>
+            <span class="condition-value">0%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Right: Suggestions -->
+    <div class="suggestions-panel">
+      <div class="suggestion-title">More Suggestions</div>
+      <ul id="suggestionsList" class="suggestion-list">
+        <li class="suggestion-item">
+          <span>London</span>
+          <div>
+            <button type="button" class="btn btn-primary" onclick="loadFavorite('London')">View</button>
+            <button type="button" class="favorite-btn" onclick="toggleFavorite('London')">
+              <i class="fas fa-star"></i>
+            </button>
+          </div>
+        </li>
+        <li class="suggestion-item">
+          <span>Berlin</span>
+          <div>
+            <button type="button" class="btn btn-primary" onclick="loadFavorite('Berlin')">View</button>
+            <button type="button" class="favorite-btn active" onclick="toggleFavorite('Berlin')">
+              <i class="fas fa-star"></i>
+            </button>
+          </div>
+        </li>
+      </ul>
+    </div>
+</div>
+  </div>
+</div>
+
+
+        <!-- Favorites Page -->
+        <div id="favorites" class="page">
+            <div class="container">
+                <h2 class="page-title">Favorite Locations</h2>
+                <div id="favoritesContainer">
+                    <ul class="suggestion-list" id="favoritesList">
+                        <!-- Favorites will be added here dynamically -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Maps Page -->
+        <div id="maps" class="page map-city">
+            <div class="container">
+                <h2 class="page-title">Weather Map</h2>
+                <div class="tabs">
+                    <div class="tab active" data-tab="map">Map View</div>
+                    <div class="tab" data-tab="cities">Cities</div>
+                </div>
+                
+                <div class="tab-content active" id="mapTab">
+                    <div class="map-container" id="map">
+                        <!-- Map will be rendered here -->
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="citiesTab">
+                    <div class="map-cities" id="mapCities">
+                        <!-- City weather will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settings" class="page">
+            <div class="container">
+                <h2 class="page-title">Settings</h2>
+                <div id="settingsContainer">
+                    <div class="air-condition">
+                        <div class="conditions-title">Units</div>
+                        <div class="conditions-grid">
+                            <div class="condition-item">
+                                <label class="condition-label">Temperature</label>
+                                <select id="tempUnit" class="condition-value">
+                                    <option value="celsius">Celsius (°C)</option>
+                                    <option value="fahrenheit">Fahrenheit (°F)</option>
+                                </select>
+                            </div>
+                            <div class="condition-item">
+                                <label class="condition-label">Wind Speed</label>
+                                <select id="windUnit" class="condition-value">
+                                    <option value="kmh">km/h</option>
+                                    <option value="mph">mph</option>
+                                    <option value="ms">m/s</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wrapper">
+                      <button type="button" id="saveSettings" class="btn btn-primary btn-design" style="margin-top: 20px;">Save Settings</button>
+                    <button type="button" id="detectLocation" class="btn btn-primary" style="margin-top: 10px; background-color: #2ecc71;">
+                        <i class="fas fa-location-arrow"></i> Detect My Location
+                    </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
